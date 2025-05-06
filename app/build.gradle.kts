@@ -33,6 +33,11 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    // Con este apartado activamos el binding, y después de sincronizarlo, se generan las clases que representan
+    // cada uno de los layouts que hay en la aplicación
+    buildFeatures{
+        viewBinding = true
+    }
 }
 
 dependencies {
