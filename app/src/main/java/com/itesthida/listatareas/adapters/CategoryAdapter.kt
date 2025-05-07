@@ -10,7 +10,9 @@ import com.itesthida.listatareas.databinding.ItemCategoryBinding
 
 class CategoryAdapter(
     var items : List<Category>,
-    val onItemClick : (position : Int) -> Unit
+    val onItemClick : (position : Int) -> Unit,
+    val onItemEditClick : (position : Int) -> Unit,
+    val onItemDeleteClick : (position : Int) -> Unit
 ): Adapter<CategoryViewHolder>(){
     /**
      * Called when RecyclerView needs a new [ViewHolder] of the given type to represent
@@ -87,13 +89,23 @@ class CategoryAdapter(
         // Esta función se ejecuta cada vez que se va a visualizar una celda
         // Obtenemos el categorye que se va a pintar en la posición que nos pasan como parámetro
         val category = items[position]
-        // Al helder le indicamos el categorye a pintar
+        // Al holder le indicamos el category a pintar
         holder.render(category)
 
         // Para el detalle, cuando se pulse uno de los items de categoryes
         holder.itemView.setOnClickListener {
             // Llamada a la función onItemClick, pasándole la posición del item pulsado
             onItemClick(position)
+        }
+        // Cualdo pulsemos el botón editar de una categoría
+        holder.binding.btnEditCategory.setOnClickListener {
+            // Llamada a la función onItemClick, pasándole la posición del item pulsado
+            onItemEditClick(position)
+        }
+        // Cualdo pulsemos el botón delete de una categoría
+        holder.binding.btnDeleteCategory.setOnClickListener {
+            // Llamada a la función onItemClick, pasándole la posición del item pulsado
+            onItemDeleteClick(position)
         }
     }
 

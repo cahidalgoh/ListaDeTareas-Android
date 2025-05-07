@@ -49,9 +49,27 @@ class MainActivity : AppCompatActivity() {
         categoryList = categoryDAO.getAllCategoryTask()
 
         // Le pasamos la lista de categorías y la función para cuando se haga clikc en una categoría
-        adapter = CategoryAdapter(categoryList){
+        adapter = CategoryAdapter(categoryList, {
             // He pulsado una categoría
-        }
+        }, { position ->
+            // Editar categoría
+            // Obtenemos la categoría a modificar
+            val category = categoryList[position]
+
+            // Mostramos el dialog category para modificar la categoría
+            showCategoryDialog(category)
+
+        }, { position ->
+            // Eliminar categoría
+            // Obtenemos la categoría a borrar
+            val category = categoryList[position]
+
+            // Llamada al dao para efectuar el borrado
+            categoryDAO.deleteCategory(category)
+
+            // Actualizamos la vista de las categorías
+            loadCategories()
+        })
 
         // Asignamos el adapter
         binding.recyclerView.adapter = adapter
@@ -60,27 +78,53 @@ class MainActivity : AppCompatActivity() {
 
         // Cuando se pulse el botón de añadir categoría, llamamos a la función showCategory
         binding.btnAddCategory.setOnClickListener {
-            showCategoryDialog()
+            // PAra el alta n ueva de una categoría, le pasamos un objeto category con el id -1
+            showCategoryDialog(Category(-1L,""))
         }
     }
 
-    // Función que muestra un diálogo, la utilizaremos para crear una nueva categorí
-    fun showCategoryDialog(){
+    // Función que muestra un diálogo, la utilizaremos para crear una
+    // nueva categoría o para editarla si ya existe
+    fun showCategoryDialog(category: Category){
 
         // Inflamos el binidig del dialog_create_category
         val dialogBinding = DialogCreateCategoryBinding.inflate(layoutInflater)
 
+        dialogBinding.etCategoryTitle.setText(category.titleCategoryTask)
+
+        // Variables para el dialog category, por defecto, un alta de categoría
+        var dialogTitle = R.string.create_category_text
+        var dialogCategoryIcon = R.drawable.ic_add
+
+        // Es una edición de categoría?
+        if (category.idCategoryTask != -1L){
+            // Actualizamos los valores necesarios para utilizarlos en el dialog para una edición de categoría
+            dialogTitle = R.string.edit_category_text
+            dialogCategoryIcon = R.drawable.ic_edit
+        }
+
         MaterialAlertDialogBuilder(this)
-            .setTitle("Create Category")
+            .setTitle(dialogTitle)
             //.setMessage("Hello")
             .setView(dialogBinding.root)// Se lo pasamos a la vista en la que queremos mostrar
             .setPositiveButton(android.R.string.ok, { dialog, which ->
-                val title = dialogBinding.etCategoryTitle.text.toString()
 
-                val category = Category(-1, title)
+                category.titleCategoryTask = dialogBinding.etCategoryTitle.text.toString()
 
-                // Insertamos la nueva categoría
-                categoryDAO.insertCategory(category)
+                if (category.idCategoryTask != -1L){
+
+                    // Categoría existe
+                    // Modificamos la categoría
+                    categoryDAO.updateCategory(category)
+
+                } else{
+
+                    // Nueva categoría
+                    // Insertamos la nueva categoría
+                    categoryDAO.insertCategory(category)
+
+                }
+                //val category = Category(-1, title)
 
                 Log.i("DIALOG_CATEGORY", "Título de la categoría a crerar: $title")
 
@@ -88,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                 loadCategories()
             })
             .setNegativeButton(android.R.string.cancel, null)
-            .setIcon(R.drawable.ic_add)
+            .setIcon(dialogCategoryIcon)
             .show()
     }
 

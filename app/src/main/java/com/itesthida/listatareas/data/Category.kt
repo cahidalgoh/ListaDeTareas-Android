@@ -2,7 +2,7 @@ package com.itesthida.listatareas.data
 
 data class Category(
     val idCategoryTask : Long,
-    val titleCategoryTask : String
+    var titleCategoryTask : String
 ){
 
     companion object {
