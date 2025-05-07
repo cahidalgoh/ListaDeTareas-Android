@@ -1,4 +1,4 @@
-package com.itesthida.listatareas
+package com.itesthida.listatareas.data
 
 data class Category(
     val idCategoryTask : Long,

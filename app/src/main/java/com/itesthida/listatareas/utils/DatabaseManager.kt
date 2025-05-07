@@ -1,8 +1,9 @@
-package com.itesthida.listatareas
+package com.itesthida.listatareas.utils
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.itesthida.listatareas.data.Category
 
 // La clase hereda de SQLiteOpenHelper para la conexión a la base de datos
 // Pasando el contexto, el nombre de la base de datos, la manera en que se recupera los datos de la base de datos

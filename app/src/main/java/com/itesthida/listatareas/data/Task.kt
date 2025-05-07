@@ -1,4 +1,4 @@
-package com.itesthida.listatareas
+package com.itesthida.listatareas.data
 
 data class Task(
     val idTask : Long,

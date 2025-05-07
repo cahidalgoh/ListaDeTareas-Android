@@ -1,12 +1,13 @@
-package com.itesthida.listatareas
+package com.itesthida.listatareas.data
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import com.itesthida.listatareas.utils.DatabaseManager
 
 // Esta clase necesita el context para poder pasarlo al DatabaseManager y así poder construirlo
-class CategtoryDAO(val context: Context) {
+class CategoryDAO(val context: Context) {
 
     private lateinit var db : SQLiteDatabase
 
