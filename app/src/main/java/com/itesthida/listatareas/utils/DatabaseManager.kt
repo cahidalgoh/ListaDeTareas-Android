@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.itesthida.listatareas.data.Category
+import com.itesthida.listatareas.data.Task
 
 // La clase hereda de SQLiteOpenHelper para la conexión a la base de datos
 // Pasando el contexto, el nombre de la base de datos, la manera en que se recupera los datos de la base de datos
@@ -23,6 +24,18 @@ class DatabaseManager (context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                     "${Category.COLUMN_NAME_TITLE} TEXT)"
 
         private const val SQL_DELETE_CATEGORY_TASK = "DROP TABLE IF EXISTS ${Category.TABLE_NAME}"
+
+        // Constante para la creación de la tabla TASK
+        private const val SQL_CREATE_TASK =
+            "CREATE TABLE ${Task.TABLE_NAME} (" +
+                    "${Task.COLUMN_NAME_ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "${Task.COLUMN_NAME_TITLE} TEXT," +
+                    "${Task.COLUMN_NAME_DONE} INTEGER," +
+                    "${Task.COLUMN_NAME_CATEGORY} INTEGER," +
+                    "FOREIGN KEY (${Task.COLUMN_NAME_CATEGORY}) " +
+                    "REFERENCES ${Category.TABLE_NAME} (${Category.COLUMN_NAME_ID}))"
+
+        private const val SQL_DELETE_TASK = "DROP TABLE IF EXISTS ${Task.TABLE_NAME}"
     }
 
     /**
@@ -33,6 +46,7 @@ class DatabaseManager (context: Context) : SQLiteOpenHelper(context, DATABASE_NA
      */
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(SQL_CREATE_CATEGORY_TASK)
+        db.execSQL(SQL_CREATE_TASK)
     }
 
     /**
@@ -83,6 +97,7 @@ class DatabaseManager (context: Context) : SQLiteOpenHelper(context, DATABASE_NA
      * @param db The database.
      */
     fun onDestroy(db: SQLiteDatabase){
+        db.execSQL(SQL_DELETE_TASK)
         db.execSQL(SQL_DELETE_CATEGORY_TASK)
     }
 }

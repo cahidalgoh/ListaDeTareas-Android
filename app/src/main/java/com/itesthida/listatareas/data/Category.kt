@@ -1,7 +1,7 @@
 package com.itesthida.listatareas.data
 
 data class Category(
-    val idCategoryTask : Long,
+    var idCategoryTask : Long,
     var titleCategoryTask : String
 ){
 
