@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         adapter = CategoryAdapter(categoryList, {
             // He pulsado una categoría
         }, { position ->
-            // Editar categoría
+            // Edit category
             // Obtenemos la categoría a modificar
             val category = categoryList[position]
 
@@ -60,15 +60,9 @@ class MainActivity : AppCompatActivity() {
             showCategoryDialog(category)
 
         }, { position ->
-            // Eliminar categoría
-            // Obtenemos la categoría a borrar
-            val category = categoryList[position]
-
-            // Llamada al dao para efectuar el borrado
-            categoryDAO.deleteCategory(category)
-
-            // Actualizamos la vista de las categorías
-            loadCategories()
+            // Delete category
+            // Mostramos el dialogo para confirmar si quiere borrar
+            showDeleteCategoryWarning(position)
         })
 
         // Asignamos el adapter
@@ -134,6 +128,30 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton(android.R.string.cancel, null)
             .setIcon(dialogCategoryIcon)
             .show()
+    }
+
+    // Función para mostrar al usuario la advertencia al borrar una categoría
+    fun showDeleteCategoryWarning(position : Int){
+
+        // Obtenemos la categoría a borrar
+        val category = categoryList[position]
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.delete_category_text))
+            .setMessage(getString(R.string.messageDeleteWarning, "${category.titleCategoryTask}"))
+            .setPositiveButton(android.R.string.ok, { dialog, which ->
+                // Delete category
+                // Llamada al dao para efectuar el borrado
+                categoryDAO.deleteCategory(category)
+
+                // Actualizamos la vista de las categorías
+                loadCategories()
+
+            })
+            .setNegativeButton(android.R.string.cancel, null)
+            .setIcon(R.drawable.ic_delete)
+            .show()
+
     }
 
     // Función para cargar las categorías en la vista
