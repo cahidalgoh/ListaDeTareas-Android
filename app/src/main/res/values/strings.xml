@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ListaDeTareas-Android</string>
+    <string name="app_name">Your Personal Task List</string>
     <string name="create_category_text">Create Category</string>
     <string name="edit_category_text">Edit Category</string>
     <string name="delete_category_text">Delete Category</string>

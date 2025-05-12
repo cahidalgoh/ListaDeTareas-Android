@@ -1,6 +1,7 @@
 package com.itesthida.listatareas.activities
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -53,7 +54,7 @@ class TaskActivity : AppCompatActivity() {
         // 6.- Llamamos al binding para establecer el comportamiento cuando se pulse el botón save
         binding.btnSaveTask.setOnClickListener {
             // 7.- Obtenemos el título que ha introducido el usuario en el edit text
-            var tasktitle = binding.etTaskTitle.toString()
+            var tasktitle = binding.etTaskTitle.text.toString()
 
             // 8.- Creamos la tarea con los parámetros requeridos
             task = Task(-1L, tasktitle, false, category)
@@ -62,6 +63,7 @@ class TaskActivity : AppCompatActivity() {
             taskDAO.insertTask(task)
             // 10.- Una vez guardada la tarea, cerramos el activity de la tarea
             finish()
+            Log.i("SAVE_TASK", "Se ha guardado la tarea ${task.titleTask}, con id: ${task.idTask}")
         }
     }
 }

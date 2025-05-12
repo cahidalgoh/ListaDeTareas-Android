@@ -300,17 +300,17 @@ class TaskDAO(val context: Context) {
                 // Para hacer un valor boolean, preguntamos si en base de datos tenemos para done != 0,
                 // si se cumple, será true (1) de lo contrario será false (0)
                 val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DONE)) != 0
-                val category = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TITLE))
+                val categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_CATEGORY))
 
                 // Obtenemos la categoría a partir del id de la categoría
-                val categoryTask = CategoryDAO(context).findCategoryTaskById(category)!!
+                val categoryTask = CategoryDAO(context).findCategoryTaskById(categoryId)!!
 
                 val task = Task(id, title, done, categoryTask)
 
                 // Aadimos la categoría a la lista
                 taskList.add(task)
             }
-            // Cerramos el cursos
+            // Cerramos el cursor
             cursor.close()
 
             Log.i("DATABASE", "Selected ${taskList.size} Tasks")

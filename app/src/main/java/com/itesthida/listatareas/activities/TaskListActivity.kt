@@ -3,14 +3,13 @@ package com.itesthida.listatareas.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.itesthida.listatareas.R
-import com.itesthida.listatareas.adapters.TaskAdapter
+                                                        import com.itesthida.listatareas.adapters.TaskAdapter
 import com.itesthida.listatareas.data.Category
 import com.itesthida.listatareas.data.CategoryDAO
 import com.itesthida.listatareas.data.Task
@@ -51,10 +50,10 @@ class TaskListActivity : AppCompatActivity() {
         taskDAO = TaskDAO(this)
 
         // Este activity recibirá el id de la categoría
-        val id = intent.getLongExtra("CATEGORY_ID", -1)
+        val categoryId = intent.getLongExtra("CATEGORY_ID", -1)
 
         // Recuperamos la categoría
-        category = categotyDAO.findCategoryTaskById(category.idCategoryTask)!!
+        category = categotyDAO.findCategoryTaskById(categoryId)!!
         // No es necesario recuperar las tareas
         // Las recuperamos en el inResume()
         taskList = emptyList()
@@ -112,8 +111,7 @@ class TaskListActivity : AppCompatActivity() {
             android.R.id.home ->{
                 finish()
                 return true
-            } else ->
-                return super.onOptionsItemSelected(item)
+            } else -> return super.onOptionsItemSelected(item)
         }
     }
 }
