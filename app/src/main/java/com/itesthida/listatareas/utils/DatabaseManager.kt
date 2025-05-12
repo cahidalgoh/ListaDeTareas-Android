@@ -14,7 +14,9 @@ class DatabaseManager (context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 1
+        // Al cambiar la versión, se ejecutará el onUpgrade, con ello eliminará las tablas que
+        // existen en la base de datos y las creará nuevamente
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "FeedReader.db"
 
         // Constante para la creación de la tabla CATEGORY

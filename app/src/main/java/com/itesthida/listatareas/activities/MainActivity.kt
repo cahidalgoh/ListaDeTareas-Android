@@ -1,5 +1,6 @@
 package com.itesthida.listatareas.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -49,8 +50,19 @@ class MainActivity : AppCompatActivity() {
         categoryList = categoryDAO.getAllCategoryTask()
 
         // Le pasamos la lista de categorías y la función para cuando se haga clikc en una categoría
-        adapter = CategoryAdapter(categoryList, {
+        adapter = CategoryAdapter(categoryList, { position ->
             // He pulsado una categoría
+            // Obtenemos la categoría
+            val category = categoryList[position]
+
+            // Creamos un intent, pasando el contecto y el activity al que va a ir
+            val intent = Intent(this, TaskListActivity::class.java)
+
+            // Pasamos la categoría seleccionada por el usuario
+            intent.putExtra("CATEGORY_ID", category.idCategoryTask)
+
+            startActivity(intent)
+
         }, { position ->
             // Edit category
             // Obtenemos la categoría a modificar
@@ -72,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         // Cuando se pulse el botón de añadir categoría, llamamos a la función showCategory
         binding.btnAddCategory.setOnClickListener {
-            // PAra el alta n ueva de una categoría, le pasamos un objeto category con el id -1
+            // Para el alta n ueva de una categoría, le pasamos un objeto category con el id -1
             showCategoryDialog(Category(-1L,""))
         }
     }
