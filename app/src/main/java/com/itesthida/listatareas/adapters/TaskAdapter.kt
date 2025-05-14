@@ -8,6 +8,11 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.itesthida.listatareas.data.Task
 import com.itesthida.listatareas.databinding.ItemTaskBinding
 
+/**
+ * @param items lista de tareas
+ * @param onItemClick función lambda que se ejecuta cuando se pulsa una tarea y que recibe la posición de la tarea a modificar
+ * @param onItemCheck función lambda que se ejecuta cuando se pulsa el check de una tarea, recibe la posición de la tarea
+ */
 class TaskAdapter(
     var items : List<Task>,
     val onItemClick : (position : Int) -> Unit,
@@ -99,8 +104,10 @@ class TaskAdapter(
         }
         // Cualdo hagamos click sobre el checkbos para cambiar el estado
         holder.binding.chkDoneTask.setOnCheckedChangeListener{ compoundButton, b ->
-            // Llamamos a la función lambda
-            onItemCheck(position)
+            if(holder.binding.chkDoneTask.isPressed){
+                // Llamamos a la función lambda
+                onItemCheck(position)
+            }
         }
     }
 

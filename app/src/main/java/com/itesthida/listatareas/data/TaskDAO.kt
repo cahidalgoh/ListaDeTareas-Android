@@ -112,7 +112,7 @@ class TaskDAO(val context: Context) {
     }
 
     // Find Task
-    fun findTaskTaskById (id: Long) : Task? {
+    fun findTaskById (id: Long) : Task? {
 
         // Abrimos conexión a la base de datos
         openConnection()
@@ -157,7 +157,7 @@ class TaskDAO(val context: Context) {
                 // Para hacer un valor boolean, preguntamos si en base de datos tenemos para done != 0,
                 // si se cumple, será true (1) de lo contrario será false (0)
                 val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DONE)) != 0
-                val category = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TITLE))
+                val category = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_CATEGORY))
 
                 // Obtenemos la categoría a partir del id de la categoría
                 val categoryTask = CategoryDAO(context).findCategoryTaskById(category)!!
@@ -275,7 +275,7 @@ class TaskDAO(val context: Context) {
             val selectionArgs = null// arrayOf("My Title")
 
             // How you want the results sorted in the resulting Cursor
-            val sortOrder = null//"${FeedEntry.COLUMN_NAME_SUBTITLE} DESC"
+            val sortOrder = "${Task.COLUMN_NAME_DONE}"//"${FeedEntry.COLUMN_NAME_SUBTITLE} DESC"
 
             val cursor = db.query(
                 Task.TABLE_NAME,   // The table to query

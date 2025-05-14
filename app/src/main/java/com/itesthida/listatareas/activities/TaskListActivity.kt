@@ -60,10 +60,38 @@ class TaskListActivity : AppCompatActivity() {
 
         // Una vez que tenemos la lista de las tareas, pasamos a construir el adapter
         // pasando como parámetro la lista de tareas, la función lambda para el click y la función lambda para el checkbox
-        adapter = TaskAdapter(taskList, {
+        adapter = TaskAdapter(taskList, { position ->
+
             // He hecho click en una tarea
-        }, {
-            // He checkeado una tarea
+            // Obtenemos la tarea pulsada
+            val task = taskList[position]
+
+            // Creamos el intent pasando el contexto y el activity al que queremos ir
+            intent = Intent(this, TaskActivity::class.java)
+
+            // Añadimos los parámetros para que puedan ser utilizados en la vista a la que queremos ir
+            // Ya sea para una alta o una edición de una tarea
+            intent.putExtra("CATEGORY_ID", category.idCategoryTask)
+            intent.putExtra("TASK_ID", task.idTask)
+
+            // Por último, iniciamos el start pasando el intent
+            startActivity(intent)
+        }, { position ->
+
+            // He pulsado el check de una tarea
+            // Obtenemos la tarea pulsada
+            val task = taskList[position]
+
+            // Cambiamos el valor de la propiedad done de la tarea
+            // independientemente de si se marca o se desmarca el check
+            task.done = !task.done
+
+            // Actualizamos la tarea en la base de datos
+            taskDAO.updateTask(task)
+
+            // Actualizamos la vista
+            reloadData()
+
         })
 
         // Si ya tenemos el binding, podemos acceder al recyclerView y decirle que su adapter es
@@ -94,11 +122,20 @@ class TaskListActivity : AppCompatActivity() {
     // Sobreescribimos el métoodo onResume para refrescar la vista con las tareas
     override fun onResume() {
         super.onResume()
+        // Actualizamos la vista
+        reloadData()
+
+    }
+
+    /**
+     * Función que actualiza la vista con las tareas, esta función es llamada cuando se añade una
+     * tarea o se modifica.
+     */
+    fun reloadData(){
         // Obtenemos la lista de tareas de la categoría
         taskList = taskDAO.getAllTasksByCategory(category)
         // Llamamos al adapter para que actalice la vista
         adapter.updateItems(taskList)
-
     }
 
     // Función para establecer el comportamiento del botón volver

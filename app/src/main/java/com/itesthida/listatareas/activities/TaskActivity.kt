@@ -12,7 +12,6 @@ import com.itesthida.listatareas.data.CategoryDAO
 import com.itesthida.listatareas.data.Task
 import com.itesthida.listatareas.data.TaskDAO
 import com.itesthida.listatareas.databinding.ActivityTaskBinding
-import com.itesthida.listatareas.databinding.ActivityTaskListBinding
 
 class TaskActivity : AppCompatActivity() {
 
@@ -44,26 +43,54 @@ class TaskActivity : AppCompatActivity() {
         // Lo mimos para el TaskDAO
         taskDAO = TaskDAO(this)
 
-        // 4.-Obtenemos el id de la categoría que lo pasan a través del intent
-        // Y si no llega, -1 como valor por defecto
+        // 4.- Obtenemos el id de la categoría, si no llega un valor, -1 como valor por defecto
         val categoryId = intent.getLongExtra("CATEGORY_ID", -1L)
 
-        // 5.- Obtenemos la categoría a partir del id que recuperamos anteriormente del intent
+        // 7.- Obtenemos el id de la tarea, si no llega un valor, -1 como valor por defecto
+        val taskId = intent.getLongExtra("TASK_ID", -1L)
+
+        // 8.- Obtenemos la categoría a partir del id que recuperamos anteriormente del intent
         category = categoryDAO.findCategoryTaskById(categoryId)!!
 
-        // 6.- Llamamos al binding para establecer el comportamiento cuando se pulse el botón save
+        // 9.- También comrobamos si es una edición de una tarea
+        if(taskId == Task.DEFAULT_ID){
+            // Es un alta nueva de una tarea, se crea un objeto task
+            task = Task(Task.DEFAULT_ID, "", false, category)
+        } else{
+
+            // Aquí podemos actualizar el texto del botón, en este caso para una actualización, UPDATE TASK
+            binding.btnSaveTask.setText("Update Task")
+
+            // Es edición de una tarea, otenemos la tarea a partir del taskId recuperado del intent
+            task = taskDAO.findTaskById(taskId)!!
+
+            // Actualizamos el valor del editText de la tarea para que luego pueda ser editada por el usuario
+            binding.etTaskTitle.setText(task.titleTask)
+        }
+
+        // 10.- Llamamos al binding para establecer el comportamiento cuando se pulse el botón save
         binding.btnSaveTask.setOnClickListener {
-            // 7.- Obtenemos el título que ha introducido el usuario en el edit text
+            // 11.- Obtenemos el título que ha introducido el usuario en el edit text
             var tasktitle = binding.etTaskTitle.text.toString()
 
-            // 8.- Creamos la tarea con los parámetros requeridos
-            task = Task(-1L, tasktitle, false, category)
+            // 12.- Ya tenemos el objeto Task creado en el paso 9, solo actualizamos el título
+            task.titleTask = tasktitle
 
-            // 9.- Guardamos la tarea
-            taskDAO.insertTask(task)
-            // 10.- Una vez guardada la tarea, cerramos el activity de la tarea
+            // 13.- Guardamos o actualizamos la tarea
+            if (task.idTask == Task.DEFAULT_ID){
+                // Insertamos task
+                taskDAO.insertTask(task)
+
+                Log.i("NEW TASK", "Inserted a new TASK: $tasktitle")
+            } else {
+                // Actualizamos task
+                taskDAO.updateTask(task)
+
+                Log.i("UPDATE TASK", "Updated TASK with id: ${task.idTask}, new title: ${task.titleTask}")
+            }
+
+            // 14.- Una vez guardados los cambios, ya sea alta o modificación, cerramos el activity de la tarea
             finish()
-            Log.i("SAVE_TASK", "Se ha guardado la tarea ${task.titleTask}, con id: ${task.idTask}")
         }
     }
 }
