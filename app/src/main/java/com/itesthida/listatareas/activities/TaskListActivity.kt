@@ -1,15 +1,21 @@
 package com.itesthida.listatareas.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.itesthida.listatareas.R
-                                                        import com.itesthida.listatareas.adapters.TaskAdapter
+import com.itesthida.listatareas.adapters.TaskAdapter
 import com.itesthida.listatareas.data.Category
 import com.itesthida.listatareas.data.CategoryDAO
 import com.itesthida.listatareas.data.Task
@@ -92,6 +98,55 @@ class TaskListActivity : AppCompatActivity() {
             // Actualizamos la vista
             reloadData()
 
+        }, { position, v ->
+            val popup = PopupMenu(this, v)
+
+            popup.menuInflater.inflate(R.menu.task_context_menu, popup.menu)
+
+            popup.setOnMenuItemClickListener { menuItem : MenuItem ->
+
+                // Obtenemos la tarea
+                val task = taskList[position]
+
+                // Este return es solo para salir del menú contextual no de la función onCreate
+                return@setOnMenuItemClickListener when(menuItem.itemId){
+                    // Opción editar del menú contextual
+                    R.id.itemActionEdit ->{
+
+                        // Creamos el intent pasando el contexto y el activity al que queremos ir
+                        intent = Intent(this, TaskActivity::class.java)
+
+                        // Añadimos los parámetros para que puedan ser utilizados en la vista a la que queremos ir
+                        // Ya sea para una alta o una edición de una tarea
+                        intent.putExtra("CATEGORY_ID", category.idCategoryTask)
+                        intent.putExtra("TASK_ID", task.idTask)
+
+                        // Por último, iniciamos el start pasando el intent
+                        startActivity(intent)
+
+                        //Toast.makeText(this, "Editar", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    // Opción borrar del menú contextual
+                    R.id.itemActionDelete ->{
+
+                        // Eliminamos la tarea de la base de datos
+                        taskDAO.deleteTask(task)
+
+                        // Después de eliminar la tarea, refrescamos la vista
+                        reloadData()
+                        Toast.makeText(this, "Deleted task ${task.titleTask}", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    else -> super.onContextItemSelected(menuItem)
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                popup.setForceShowIcon(true)
+            }
+
+            popup.show()
         })
 
         // Si ya tenemos el binding, podemos acceder al recyclerView y decirle que su adapter es
@@ -136,6 +191,36 @@ class TaskListActivity : AppCompatActivity() {
         taskList = taskDAO.getAllTasksByCategory(category)
         // Llamamos al adapter para que actalice la vista
         adapter.updateItems(taskList)
+    }
+
+    /**
+     * Sobreescribimos la siguiente función para personalizarla y tener un menú para cada tarea
+     */
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menuInflater.inflate(R.menu.task_context_menu, menu)
+    }
+
+    /**
+     * Función para manejar el comportamiento al hacer click en las opciones del menú
+     */
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
+        return when(item.itemId){
+            // Opción editar del menú contextual
+            R.id.itemActionEdit ->{
+                true
+            }
+            // Opción borrar del menú contextual
+            R.id.itemActionDelete ->{
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
     }
 
     // Función para establecer el comportamiento del botón volver

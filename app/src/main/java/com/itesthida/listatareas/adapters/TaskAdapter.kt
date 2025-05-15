@@ -12,11 +12,13 @@ import com.itesthida.listatareas.databinding.ItemTaskBinding
  * @param items lista de tareas
  * @param onItemClick función lambda que se ejecuta cuando se pulsa una tarea y que recibe la posición de la tarea a modificar
  * @param onItemCheck función lambda que se ejecuta cuando se pulsa el check de una tarea, recibe la posición de la tarea
+ * @param onItemMenu función lambda que se ejecuta cuando una opción del menú de una tarea fue pulsada por el usuario, recibe la posición de la tarea y la vista a la que pertenece para que el context menú salga justo debajo de la tarea pulsada.
  */
 class TaskAdapter(
     var items : List<Task>,
     val onItemClick : (position : Int) -> Unit,
-    val onItemCheck : (position : Int) -> Unit
+    val onItemCheck : (position : Int) -> Unit,
+    val onItemMenu : (position : Int, v: View) -> Unit
 ): Adapter<TaskViewHolder>(){
     /**
      * Called when RecyclerView needs a new [ViewHolder] of the given type to represent
@@ -104,10 +106,15 @@ class TaskAdapter(
         }
         // Cualdo hagamos click sobre el checkbos para cambiar el estado
         holder.binding.chkDoneTask.setOnCheckedChangeListener{ compoundButton, b ->
+            // Se llama a la función solo si el usuario ha pulsado sobre el checkbox
             if(holder.binding.chkDoneTask.isPressed){
                 // Llamamos a la función lambda
                 onItemCheck(position)
             }
+        }
+        // Cuando hagamos click sobre una de las opciones del menú contextual de una tarea
+        holder.binding.btnTaskMenu.setOnClickListener { view ->
+            onItemMenu(position, view)
         }
     }
 

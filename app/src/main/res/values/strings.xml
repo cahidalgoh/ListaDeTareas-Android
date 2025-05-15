@@ -11,4 +11,6 @@
      var text = getString(R.string.welcome_messages, username, mailCount)
      -->
     <string name="messageDeleteWarning">You are going to delete the %1$s category and all its tasks.\n¿Do you want to continue?</string>
+    <string name="edit_task_label">Edit Task</string>
+    <string name="delete_task_label">Delete Task</string>
 </resources>

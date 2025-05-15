@@ -1,7 +1,10 @@
 package com.itesthida.listatareas.activities
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -54,6 +57,7 @@ class TaskActivity : AppCompatActivity() {
 
         // 9.- También comrobamos si es una edición de una tarea
         if(taskId == Task.DEFAULT_ID){
+            //binding.etTaskTitle.requestFocus()
             // Es un alta nueva de una tarea, se crea un objeto task
             task = Task(Task.DEFAULT_ID, "", false, category)
         } else{
